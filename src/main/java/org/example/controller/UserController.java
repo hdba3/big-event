@@ -7,14 +7,22 @@
 package org.example.controller;
 
 
+import jakarta.validation.constraints.Pattern;
 import org.example.pojo.Result;
 import org.example.pojo.User;
 import org.example.service.UserService;
+import org.example.utils.JwtUtil;
+import org.example.utils.Md5Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
+@Validated  //开启数据校验
 @RequestMapping("/user")
 @RestController
 public class UserController {
@@ -22,7 +30,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public Result register(String username, String password) {
+    public Result register(@Pattern(regexp = "^\\S{5,16}") String username, @Pattern(regexp = "^\\S{5,16}") String password) {
         User u = userService.selectByUsername(username);
         if (u == null) {
             userService.insert(username, password);
@@ -30,5 +38,22 @@ public class UserController {
         } else {
             return Result.error("用户名已存在");
         }
+    }
+
+    @PostMapping("/login")
+    public Result<String> login(@Pattern(regexp = "^\\S{5,16}") String username, @Pattern(regexp = "^\\S{5,16}") String password) {
+        User u = userService.selectByUsername(username);
+        if (u == null) {
+            return Result.error("用户名不存在");
+        }
+        if (Md5Util.getMD5String(password).equals(u.getPassword())) {
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("id", u.getId());
+            claims.put("username", u.getUsername());
+            String token = JwtUtil.genToken(claims);
+            return Result.success(token);
+        }
+        return Result.error("密码错误");
+
     }
 }

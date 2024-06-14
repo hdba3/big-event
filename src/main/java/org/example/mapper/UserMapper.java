@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Mapper
 public interface UserMapper {
     //查询用户名是否存在
-    @Select("select count(*) from user where username=#{username}")
+    @Select("select * from user where username=#{username}")
     User selectByUsername(String username);
 
     //插入用户
