@@ -5,6 +5,7 @@
  */
 package org.example.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Date;
 public class User {
     private Integer id;
     private String username;
+    @JsonIgnore //让springmvc把当前对象返回成json时，忽略这个字段
     private String password;
     private String nickname;
     private String email;

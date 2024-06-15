@@ -13,8 +13,10 @@ import org.example.pojo.User;
 import org.example.service.UserService;
 import org.example.utils.JwtUtil;
 import org.example.utils.Md5Util;
+import org.example.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,5 +57,15 @@ public class UserController {
         }
         return Result.error("密码错误");
 
+    }
+
+    @GetMapping("/userInfo")
+    public Result userInfo(/*@RequestHeader("Authorization") String token*/) {
+//        Map<String, Object> map = JwtUtil.parseToken(token);
+        //用ThreadLocalUtil工具类获取业务数据
+        Map<String, Object> map = ThreadLocalUtil.get();
+        String username = (String) map.get("username");
+        User u = userService.selectByUsername(username);
+        return Result.success(u);
     }
 }
