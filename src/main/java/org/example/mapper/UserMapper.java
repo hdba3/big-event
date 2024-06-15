@@ -9,6 +9,7 @@ package org.example.mapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.example.pojo.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -22,4 +23,8 @@ public interface UserMapper {
     //插入用户
     @Insert("insert into user(username,password,update_time,create_time) values(#{username},#{password},now(),now())")
     void insert(String username, String password);
+
+    //更新用户
+    @Update("update user set nickname=#{nickname},email=#{email},update_time=#{updateTime} where id=#{id}")
+    void update(User user);
 }
