@@ -5,6 +5,7 @@
  */
 package org.example.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -17,6 +18,7 @@ public class Category {
     private String categoryName;
     @NotEmpty
     private String categoryAlias;
+    @JsonIgnore //让springmvc把当前对象返回成json时，忽略这个字段
     private Integer createUser;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;

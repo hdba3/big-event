@@ -11,10 +11,9 @@ import org.example.pojo.Result;
 import org.example.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/category")
 @RestController
@@ -26,5 +25,12 @@ public class CategoryController {
     public Result insert(@RequestBody @Validated Category category) {
         categoryService.insert(category);
         return Result.success();
+    }
+
+    @Validated
+    @GetMapping
+    public Result list() {
+        List<Category> category = categoryService.list();
+        return Result.success(category);
     }
 }
