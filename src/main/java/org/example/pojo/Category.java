@@ -6,15 +6,18 @@
 package org.example.pojo;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.NotEmpty;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 public class Category {
     private Integer id;
+    @NotEmpty
     private String categoryName;
+    @NotEmpty
     private String categoryAlias;
     private Integer createUser;
-    private Date createTime;
-    private Date updateTime;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 }
