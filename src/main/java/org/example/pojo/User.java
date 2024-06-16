@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +28,7 @@ public class User {
     @NotEmpty   //非空校验
     @Email  //邮箱校验
     private String email;
+    @URL
     private String userPic;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
