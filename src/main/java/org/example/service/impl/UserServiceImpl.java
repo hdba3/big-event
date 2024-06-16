@@ -21,11 +21,13 @@ class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
+    //根据用户名查询用户
     @Override
     public User selectByUsername(String username) {
         return userMapper.selectByUsername(username);
     }
 
+    //插入用户
     @Override
     public void insert(String username, String password) {
         //使用MD5工具类对密码进行加密
@@ -33,16 +35,27 @@ class UserServiceImpl implements UserService {
         userMapper.insert(username, md5password);
     }
 
+    //更新用户
     @Override
     public void update(User user) {
         user.setUpdateTime(LocalDateTime.now());
         userMapper.update(user);
     }
 
+    //更新用户头像
     @Override
     public void updateAvatar(String avatarUrl) {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer id = (Integer) map.get("id");
         userMapper.updateAvatar(avatarUrl, id);
+    }
+
+    //更新用户密码
+    @Override
+    public void updatePwd(String newPwd) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
+        String md5password = Md5Util.getMD5String(newPwd);
+        userMapper.updatePwd(md5password, id);
     }
 }
