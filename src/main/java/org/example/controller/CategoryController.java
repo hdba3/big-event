@@ -21,16 +21,30 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    //添加分类
     @PostMapping
-    public Result insert(@RequestBody @Validated Category category) {
+    public Result insert(@RequestBody @Validated(Category.Insert.class) Category category) {
         categoryService.insert(category);
         return Result.success();
     }
 
-    @Validated
+    //查询分类列表
     @GetMapping
     public Result list() {
         List<Category> category = categoryService.list();
         return Result.success(category);
+    }
+
+    //查询分类详情
+    @GetMapping("/detail")
+    public Result detail(@RequestParam Integer id) {
+        return Result.success(categoryService.detail(id));
+    }
+
+    //更新分类
+    @PutMapping
+    public Result update(@RequestBody @Validated(Category.Update.class) Category category) {
+        categoryService.update(category);
+        return Result.success();
     }
 }

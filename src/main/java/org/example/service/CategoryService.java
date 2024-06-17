@@ -9,4 +9,8 @@ public interface CategoryService {
     void insert(Category category);
 
     List<Category> list();
+
+    Category detail(Integer id);
+
+    void update(Category category);
 }

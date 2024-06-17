@@ -3,6 +3,7 @@ package org.example.mapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.example.pojo.Category;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -19,4 +20,12 @@ public interface CategoryMapper {
     //查询分类
     @Select("select * from category where create_user=#{userid}")
     List<Category> list(Integer userid);
+
+    //查询分类详情
+    @Select("select * from category where id=#{id}")
+    Category detail(Integer id);
+
+    //更新分类
+    @Update("update category set category_name=#{categoryName},category_alias=#{categoryAlias},update_time=now() where id=#{id}")
+    void update(Category category);
 }
