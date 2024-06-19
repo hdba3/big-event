@@ -16,12 +16,16 @@ import org.example.utils.Md5Util;
 import org.example.utils.ThreadLocalUtil;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 
 @Validated  //开启数据校验
 @RequestMapping("/user")
@@ -29,6 +33,8 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @PostMapping("/register")
     public Result register(@Pattern(regexp = "^\\S{5,16}") String username, @Pattern(regexp = "^\\S{5,16}") String password) {
@@ -52,6 +58,9 @@ public class UserController {
             claims.put("id", u.getId());
             claims.put("username", u.getUsername());
             String token = JwtUtil.genToken(claims);
+            //把Token存入Redis中
+            ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+            ops.set(token, token, 1, TimeUnit.HOURS);   //保存时间为1小时
             return Result.success(token);
         }
         return Result.error("密码错误");
@@ -83,7 +92,7 @@ public class UserController {
     }
 
     @PatchMapping("/updatePwd")
-    public Result updatePwd(@RequestBody Map<String, String> pwd) {
+    public Result updatePwd(@RequestBody Map<String, String> pwd, @RequestHeader("Authorization") String token) {
         String oldPwd = pwd.get("old_pwd");
         String newPwd = pwd.get("new_pwd");
         String rePwd = pwd.get("re_pwd");
@@ -100,6 +109,9 @@ public class UserController {
                     return Result.error("两次密码不一致");
                 } else {
                     userService.updatePwd(newPwd);
+                    //修改密码后，需要重新登录，所以要删除Redis中的Token
+                    ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+                    ops.getOperations().delete(token);
                     return Result.success();
                 }
             }

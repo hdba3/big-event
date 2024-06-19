@@ -24,6 +24,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private ArticleMapper articleMapper;
 
+    //新增文章
     @Override
     public void insert(Article article) {
         Map<String, Object> map = ThreadLocalUtil.get();
@@ -34,6 +35,7 @@ public class ArticleServiceImpl implements ArticleService {
         articleMapper.insert(article);
     }
 
+    //条件分页查询
     @Override
     public PageBean<Article> list(Integer pageNum, Integer pageSize, String state, Integer categoryId) {
         //1.创建PageBean对象
@@ -53,5 +55,23 @@ public class ArticleServiceImpl implements ArticleService {
         pb.setTotal(page.getTotal());
         pb.setItems(page.getResult());
         return pb;
+    }
+
+    //更新文章
+    @Override
+    public void update(Article article) {
+        articleMapper.update(article);
+
+    }
+
+    @Override
+    public void delete(Integer id) {
+        articleMapper.delete(id);
+    }
+
+    @Override
+    public Article detail(Integer id) {
+        Article article = articleMapper.detail(id);
+        return article;
     }
 }

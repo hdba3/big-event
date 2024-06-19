@@ -56,4 +56,24 @@ public class ArticleController {
         PageBean<Article> pb = articleService.list(pageNum, pageSize, state, categoryId);
         return Result.success(pb);
     }
+
+    //更新文章
+    @PutMapping
+    public Result update(@RequestBody Article article) {
+        articleService.update(article);
+        return Result.success();
+    }
+
+    //删除文章
+    @DeleteMapping
+    public Result delete(@RequestParam Integer id) {
+        articleService.delete(id);
+        return Result.success();
+    }
+
+    //查询文章详情
+    @GetMapping("/detail")
+    public Result<Article> detail(@RequestParam Integer id) {
+        return Result.success(articleService.detail(id));
+    }
 }
